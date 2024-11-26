@@ -1,0 +1,2 @@
+numpy
+diffusers>=0.31.0

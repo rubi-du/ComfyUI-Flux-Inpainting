@@ -1,0 +1,14 @@
+[project]
+name = "comfyui-flux-outpainting-nf4"
+description = ""
+version = "1.0.0"
+license = {file = "LICENSE"}
+
+[project.urls]
+Repository = "https://github.com/rubi-du/ComfyUI-Flux-Outpainting-nf4"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-Flux-Outpainting-nf4"
+Icon = ""
