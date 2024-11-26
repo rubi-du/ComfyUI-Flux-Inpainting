@@ -34,6 +34,9 @@ class FluxNF4Inpainting:
                     num_inference_steps,
                     cached,
                     ):
+        
+        global _pipeline
+        
         pipeline = _pipeline
         if not cached or pipeline is None:
             flux_dir = os.path.join(models_dir, "FLUX.1-Fill-dev")
@@ -43,7 +46,6 @@ class FluxNF4Inpainting:
             flux_nf4_dir = os.path.join(models_dir, "FLUX.1-Fill-dev-nf4")
             if not os.path.isdir(flux_nf4_dir):
                 flux_nf4_dir = "sayakpaul/FLUX.1-Fill-dev-nf4"
-            global _pipeline
             _pipeline = load_flux_fill_nf4(
                 flux_dir=flux_dir,
                 flux_nf4_dir=flux_nf4_dir,
