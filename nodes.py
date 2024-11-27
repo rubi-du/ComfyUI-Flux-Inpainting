@@ -77,12 +77,16 @@ class FluxNF4Inpainting:
             
             logging.info("Running Flux NF4 Inpainting")
             pbar = comfy.utils.ProgressBar(num_inference_steps)
+            def callback_on_step_end(self, i, t, callback_kwargs):
+                pbar.update(1)
+                # hack to prevent crash
+                return {}
             res = pipeline(
                 prompt=prompt,
                 image=image,
                 mask_image=mask,
                 num_inference_steps=num_inference_steps,
-                callback_on_step_end=lambda _, i, t, callback_kwargs: pbar.update(i),
+                callback_on_step_end=callback_on_step_end,
             )
             logging.info("Flux NF4 Inpainting finished")
             
