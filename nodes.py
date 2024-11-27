@@ -82,7 +82,7 @@ class FluxNF4Inpainting:
                 image=image,
                 mask_image=mask,
                 num_inference_steps=num_inference_steps,
-                callback_on_step_end=lambda _, i, t, **kwargs: pbar.update(i),
+                callback_on_step_end=lambda _, i, t, callback_kwargs: pbar.update(i),
             )
             logging.info("Flux NF4 Inpainting finished")
             
