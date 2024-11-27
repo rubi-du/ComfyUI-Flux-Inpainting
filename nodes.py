@@ -44,7 +44,7 @@ class FluxNF4Inpainting:
         if mask.dim() == 2:
             mask = torch.unsqueeze(mask, 0)
         mask = tensor2pil(mask[0])
-        
+        mask = mask.convert("RGB")
         pipeline = _pipeline
         if not cached or pipeline is None:
             flux_dir = os.path.join(models_dir, "FLUX.1-Fill-dev")
