@@ -4,7 +4,7 @@ import os
 import numpy as np
 import torch
 
-from modules.image_util import pil2tensor, tensor2pil
+from .modules.image_util import pil2tensor, tensor2pil
 from .modules.load_util import load_flux_fill_nf4
 from folder_paths import models_dir
 
