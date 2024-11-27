@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 import torch
+
 from .modules.load_util import load_flux_fill_nf4
 from folder_paths import models_dir
 
@@ -19,7 +20,13 @@ class FluxNF4Inpainting:
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "image": ("IMAGE",),
+                "mask_image": ("IMAGE",),
+                "num_inference_steps": ("INT", {"default": 50, "min": 10, "max": 60, "step": 1}),
+                "cached": ("BOOLEAN", {"default": False}),
+            }
         }
         
     RETURN_TYPES = ("IMAGE",)
@@ -49,7 +56,7 @@ class FluxNF4Inpainting:
             _pipeline = load_flux_fill_nf4(
                 flux_dir=flux_dir,
                 flux_nf4_dir=flux_nf4_dir,
-                four_bit=True
+                four_bit=True,
             )
             _pipeline.enable_model_cpu_offload()
             pipeline = _pipeline
