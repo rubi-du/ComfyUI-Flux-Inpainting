@@ -27,7 +27,6 @@ from diffusers.models.attention_processor import (
     Attention,
     AttentionProcessor,
     FluxAttnProcessor2_0,
-    FluxAttnProcessor2_0_NPU,
     FusedFluxAttnProcessor2_0,
 )
 from diffusers.models.modeling_utils import ModelMixin
@@ -66,10 +65,7 @@ class FluxSingleTransformerBlock(nn.Module):
         self.act_mlp = nn.GELU(approximate="tanh")
         self.proj_out = nn.Linear(dim + self.mlp_hidden_dim, dim)
 
-        if is_torch_npu_available():
-            processor = FluxAttnProcessor2_0_NPU()
-        else:
-            processor = FluxAttnProcessor2_0()
+        processor = FluxAttnProcessor2_0()
         self.attn = Attention(
             query_dim=dim,
             cross_attention_dim=None,
