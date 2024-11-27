@@ -4,12 +4,9 @@ import os
 import numpy as np
 import torch
 
+from modules.image_util import pil2tensor, tensor2pil
 from .modules.load_util import load_flux_fill_nf4
 from folder_paths import models_dir
-
-
-def pil2tensor(image):
-    return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
 
 _pipeline = None
 
@@ -23,7 +20,7 @@ class FluxNF4Inpainting:
             "required": {
                 "prompt": ("STRING", {"multiline": True}),
                 "image": ("IMAGE",),
-                "mask_image": ("IMAGE",),
+                "mask": ("MASK",),
                 "num_inference_steps": ("INT", {"default": 50, "min": 10, "max": 60, "step": 1}),
                 "cached": ("BOOLEAN", {"default": False}),
             }
@@ -37,12 +34,16 @@ class FluxNF4Inpainting:
     def inpainting(self,
                     prompt,
                     image,
-                    mask_image,
+                    mask,
                     num_inference_steps,
                     cached,
                     ):
         
         global _pipeline
+        
+        if mask.dim() == 2:
+            mask = torch.unsqueeze(mask, 0)
+        mask = tensor2pil(mask[0])
         
         pipeline = _pipeline
         if not cached or pipeline is None:
@@ -64,7 +65,7 @@ class FluxNF4Inpainting:
             res = pipeline(
                 prompt=prompt,
                 image=image,
-                mask_image=mask_image,
+                mask_image=mask,
                 num_inference_steps=num_inference_steps,
             )
             

@@ -32,8 +32,8 @@ from huggingface_hub.utils import validate_hf_hub_args
 from torch import Tensor, nn
 
 from diffusers import __version__
-from diffusers.quantizers import DiffusersAutoQuantizer, DiffusersQuantizer
-from diffusers.quantizers.quantization_config import QuantizationMethod
+from .quantizers import DiffusersAutoQuantizer, DiffusersQuantizer
+from .quantizers.quantization_config import QuantizationMethod
 from diffusers.utils import (
     CONFIG_NAME,
     FLAX_WEIGHTS_NAME,
