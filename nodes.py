@@ -34,7 +34,7 @@ class FluxNF4Inpainting:
     FUNCTION = "inpainting"
     CATEGORY = "Inpainting"
         
-    def outpainting(self,
+    def inpainting(self,
                     prompt,
                     image,
                     mask_image,
