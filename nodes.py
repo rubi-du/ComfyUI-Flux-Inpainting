@@ -27,6 +27,7 @@ class FluxNF4Inpainting:
                 "mask": ("MASK",),
                 "num_inference_steps": ("INT", {"default": 50, "min": 10, "max": 60, "step": 1}),
                 "cached": ("BOOLEAN", {"default": False}),
+                "guidance_scale": ("FLOAT", {"default": 30.0, "min": 0.1, "max": 30.0, "step": 0.1}),
             }
         }
         
@@ -41,6 +42,7 @@ class FluxNF4Inpainting:
                     mask,
                     num_inference_steps,
                     cached,
+                    guidance_scale
                     ):
         mm.unload_all_models()
         
@@ -53,6 +55,9 @@ class FluxNF4Inpainting:
         if image.dim() == 2:
             image = torch.unsqueeze(image, 0)
         image = tensor2pil(image[0])
+        
+        width = (image.width // 8) * 8
+        height = (image.height // 8) * 8
         
         try:
             pipeline = _pipeline
@@ -85,6 +90,9 @@ class FluxNF4Inpainting:
                 prompt=prompt,
                 image=image,
                 mask_image=mask,
+                width=width,
+                height=height,
+                guidance_scale=guidance_scale,
                 num_inference_steps=num_inference_steps,
                 callback_on_step_end=callback_on_step_end,
             )
