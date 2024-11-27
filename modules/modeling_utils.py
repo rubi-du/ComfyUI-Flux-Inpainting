@@ -56,7 +56,7 @@ from diffusers.utils.hub_utils import (
     load_or_create_model_card,
     populate_model_card,
 )
-from diffusers.models.model_loading_utils import (
+from .model_loading_utils import (
     _determine_device_map,
     _fetch_index_file,
     _fetch_index_file_legacy,

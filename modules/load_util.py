@@ -10,7 +10,9 @@ dtype = torch.bfloat16
 
 def load_flux_fill_nf4(flux_dir: str, flux_nf4_dir: str, four_bit=False):
     """ load flux fill nf4 """
-    orig_pipeline = DiffusionPipeline.from_pretrained(flux_dir, transformer=None, torch_dtype=dtype)
+    exclude_sub_model = ["transformer", "text_encoder_2"] if four_bit else ["transformer"]
+    exclude_sub_model_dict = {model: None for model in exclude_sub_model}
+    orig_pipeline = FluxFillPipeline.from_pretrained(flux_dir, torch_dtype=dtype, **exclude_sub_model_dict)
     
     if four_bit:
         print("Using four bit.")
