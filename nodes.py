@@ -3,18 +3,14 @@ import os
 
 import numpy as np
 import torch
+import logging
 
 from .modules.image_util import pil2tensor, tensor2pil
 from .modules.load_util import load_flux_fill_nf4
 from folder_paths import models_dir
 
-def clear_memory():
-    import gc
-    # Cleanup
-    gc.collect()
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-        torch.cuda.ipc_collect()
+import comfy.model_management as mm
+import comfy.utils
 
 _pipeline = None
 
@@ -46,6 +42,7 @@ class FluxNF4Inpainting:
                     num_inference_steps,
                     cached,
                     ):
+        mm.unload_all_models()
         
         global _pipeline
         
@@ -57,42 +54,55 @@ class FluxNF4Inpainting:
             image = torch.unsqueeze(image, 0)
         image = tensor2pil(image[0])
         
-        pipeline = _pipeline
-        if not cached or pipeline is None:
-            flux_dir = os.path.join(models_dir, "FLUX.1-Fill-dev")
-            if not os.path.isdir(flux_dir):
-                flux_dir = "black-forest-labs/FLUX.1-Fill-dev"
-            
-            flux_nf4_dir = os.path.join(models_dir, "FLUX.1-Fill-dev-nf4")
-            if not os.path.isdir(flux_nf4_dir):
-                flux_nf4_dir = "sayakpaul/FLUX.1-Fill-dev-nf4"
-            _pipeline = load_flux_fill_nf4(
-                flux_dir=flux_dir,
-                flux_nf4_dir=flux_nf4_dir,
-                four_bit=True,
-            )
-            _pipeline.enable_model_cpu_offload()
+        try:
             pipeline = _pipeline
+            logging.info("Loading Flux NF4 Inpainting")
+            if not cached or pipeline is None:
+                flux_dir = os.path.join(models_dir, "FLUX.1-Fill-dev")
+                if not os.path.isdir(flux_dir):
+                    flux_dir = "black-forest-labs/FLUX.1-Fill-dev"
+                
+                flux_nf4_dir = os.path.join(models_dir, "FLUX.1-Fill-dev-nf4")
+                if not os.path.isdir(flux_nf4_dir):
+                    flux_nf4_dir = "sayakpaul/FLUX.1-Fill-dev-nf4"
+                _pipeline = load_flux_fill_nf4(
+                    flux_dir=flux_dir,
+                    flux_nf4_dir=flux_nf4_dir,
+                    four_bit=True,
+                )
+                logging.info("Flux NF4 Inpainting loaded")
+                _pipeline.enable_model_cpu_offload()
+                logging.info("Flux NF4 Inpainting enabled model cpu offload")
+                pipeline = _pipeline
             
-        res = pipeline(
-            prompt=prompt,
-            image=image,
-            mask_image=mask,
-            num_inference_steps=num_inference_steps,
-        )
-        
-        if not cached:
-            del pipeline
-            del _pipeline
-            _pipeline = None
+            logging.info("Running Flux NF4 Inpainting")
+            pbar = comfy.utils.ProgressBar(num_inference_steps)
+            res = pipeline(
+                prompt=prompt,
+                image=image,
+                mask_image=mask,
+                num_inference_steps=num_inference_steps,
+                callback_on_step_end=lambda _, i, t, **kwargs: pbar.update(i),
+            )
+            logging.info("Flux NF4 Inpainting finished")
             
-            clear_memory()
+            if not cached:
+                del pipeline
+                del _pipeline
+                _pipeline = None
+                
+            mm.soft_empty_cache()
+                
+            processed_images = []
+            for image in res.images:
+                image_tensor = pil2tensor(image)
+                processed_images.append(image_tensor)
             
-        processed_images = []
-        for image in res.images:
-            image = pil2tensor(image)
-        
-        res_images = torch.cat(processed_images, dim=0)
+            res_images = torch.cat(processed_images, dim=0)
+        except torch.cuda.OutOfMemoryError as e:
+            mm.free_memory(mm.get_total_memory(mm.get_torch_device()), mm.get_torch_device())
+            mm.soft_empty_cache()
+            raise e
         return (res_images,)
 
 
