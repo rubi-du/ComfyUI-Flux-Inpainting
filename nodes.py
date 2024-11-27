@@ -8,6 +8,14 @@ from .modules.image_util import pil2tensor, tensor2pil
 from .modules.load_util import load_flux_fill_nf4
 from folder_paths import models_dir
 
+def clear_memory():
+    import gc
+    # Cleanup
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.ipc_collect()
+
 _pipeline = None
 
 class FluxNF4Inpainting:
@@ -66,16 +74,27 @@ class FluxNF4Inpainting:
             _pipeline.enable_model_cpu_offload()
             pipeline = _pipeline
             
-            res = pipeline(
-                prompt=prompt,
-                image=image,
-                mask_image=mask,
-                num_inference_steps=num_inference_steps,
-            )
+        res = pipeline(
+            prompt=prompt,
+            image=image,
+            mask_image=mask,
+            num_inference_steps=num_inference_steps,
+        )
+        
+        if not cached:
+            del pipeline
+            del _pipeline
+            _pipeline = None
             
-            return pil2tensor(res.images[0])
+            clear_memory()
             
-            
+        processed_images = []
+        for image in res.images:
+            image = pil2tensor(image)
+        
+        res_images = torch.cat(processed_images, dim=0)
+        return (res_images,)
+
 
 NODE_CLASS_MAPPINGS = {
     "Flux Inpainting": FluxNF4Inpainting
