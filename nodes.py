@@ -128,7 +128,8 @@ class FluxNF4Inpainting:
 
 
 NODE_CLASS_MAPPINGS = {
-    "Flux Inpainting": FluxNF4Inpainting
+    "Flux Inpainting": FluxNF4Inpainting,
+    "Flux Inpaint": FluxNF4Inpainting
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
