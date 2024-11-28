@@ -56,13 +56,21 @@ class FluxNF4Inpainting:
             image = torch.unsqueeze(image, 0)
         image = tensor2pil(image[0])
         
-        width = (image.width // 8) * 8
-        height = (image.height // 8) * 8
+        width = (image.width // 16) * 16
+        height = (image.height // 16) * 16
+        
+        image.resize((width, height))
+        mask.resize((width, height))
         
         try:
             pipeline = _pipeline
             logging.info("Loading Flux NF4 Inpainting")
             if not cached or pipeline is None:
+                pbar1 = comfy.utils.ProgressBar(4)
+                def callback_on_step_end1(self, i, t, callback_kwargs):
+                    pbar1.update(1)
+                    # hack to prevent crash
+                    return {}
                 flux_dir = os.path.join(models_dir, "FLUX.1-Fill-dev")
                 if not os.path.isdir(flux_dir):
                     flux_dir = "black-forest-labs/FLUX.1-Fill-dev"
@@ -74,6 +82,7 @@ class FluxNF4Inpainting:
                     flux_dir=flux_dir,
                     flux_nf4_dir=flux_nf4_dir,
                     four_bit=True,
+                    step_call_back=callback_on_step_end1
                 )
                 logging.info("Flux NF4 Inpainting loaded")
                 _pipeline.enable_model_cpu_offload()
@@ -81,9 +90,9 @@ class FluxNF4Inpainting:
                 pipeline = _pipeline
             
             logging.info("Running Flux NF4 Inpainting")
-            pbar = comfy.utils.ProgressBar(num_inference_steps)
-            def callback_on_step_end(self, i, t, callback_kwargs):
-                pbar.update(1)
+            pbar2 = comfy.utils.ProgressBar(num_inference_steps)
+            def callback_on_step_end2(self, i, t, callback_kwargs):
+                pbar2.update(1)
                 # hack to prevent crash
                 return {}
             res = pipeline(
@@ -94,7 +103,7 @@ class FluxNF4Inpainting:
                 height=height,
                 guidance_scale=guidance_scale,
                 num_inference_steps=num_inference_steps,
-                callback_on_step_end=callback_on_step_end,
+                callback_on_step_end=callback_on_step_end2,
             )
             logging.info("Flux NF4 Inpainting finished")
             
@@ -126,8 +135,3 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Flux Inpainting": "Flux Inpainting"
 }
-
-            
-        
-        
-        
