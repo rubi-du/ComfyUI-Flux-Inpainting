@@ -67,7 +67,7 @@ class FluxNF4Inpainting:
             logging.info("Loading Flux NF4 Inpainting")
             if not cached or pipeline is None:
                 pbar1 = comfy.utils.ProgressBar(4)
-                def callback_on_step_end1(self, i, t, callback_kwargs):
+                def callback_on_step_end1(i):
                     pbar1.update(1)
                     # hack to prevent crash
                     return {}
