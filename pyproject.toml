@@ -8,7 +8,9 @@ license = {file = "LICENSE"}
 Repository = "https://github.com/rubi-du/ComfyUI-Flux-Inpainting.git"
 #  Used by Comfy Registry https://comfyregistry.org
 
+dependencies = ["numpy", "diffusers", "transformers", "bitsandbytes"]
+
 [tool.comfy]
-PublisherId = ""
+PublisherId = "duhaifeng"
 DisplayName = "ComfyUI-Flux-Inpainting"
 Icon = ""
