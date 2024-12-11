@@ -35,10 +35,10 @@ Install via ComfyUI-Manager by searching for "ComfyUI-Flux-Inpainting".
 - FluxTransformerInpainting
 - FluxVAELoader
 
-#### `FluxTransformerInpainting` special Instruction
+#### `FluxTransformerInpainting` special instruction
 The `FluxTransformerInpainting` node only need to load the transformer submodel from the `FLUX.1-Fil-dev-nf4` model and don't need load other submodels from `FLUX.1-Fil-dev`
 
-#### `FluxVAELoader` special Instruction
+#### `FluxVAELoader` special instruction
 The `FluxVAELoader` node  need to load the flux fill vae model from the `ComfyUI/models` directory, so you need to download the model and place it in the `ComfyUI/models` directory
 vae model download links: https://huggingface.co/black-forest-labs/FLUX.1-Fill-dev/tree/main/vae<br/>  
   
