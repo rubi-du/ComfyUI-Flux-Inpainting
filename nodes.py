@@ -195,7 +195,7 @@ class FluxSimpleInpainting:
                 if not os.path.isdir(flux_nf4_dir):
                     flux_nf4_dir = "sayakpaul/FLUX.1-Fill-dev-nf4"
                 _pipeline = load_simple_flux_fill_nf4(
-                    flux_dir=FLUX_FILL_DIR_PATH,
+                    flux_dir=flux_dir,
                     flux_nf4_dir=flux_nf4_dir,
                     four_bit=True,
                     step_call_back=callback_on_step_end1,

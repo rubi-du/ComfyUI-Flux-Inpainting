@@ -4,6 +4,9 @@
 ## Introduction  
 This repository wraps the flux fill model as ComfyUI nodes. Use NF4 flux fill model, support for inpainting and outpainting image. Compared to the flux fill dev model, these nodes can use the flux fill model to perform inpainting and outpainting work under lower VRM conditions<br>  
 
+## News
+- Dec 11, 2024: Add `FluxSimpleInpainting`, `FluxTransformerInpainting`, `FluxVAELoader` nodes can be used to split pipelines and comfyui clip and vae loader can be used instead<br>
+
 ## Installation   
   
 #### Method 1:  
@@ -21,8 +24,23 @@ Directly download the node source code package, unzip it into the `custom_nodes`
 Install via ComfyUI-Manager by searching for "ComfyUI-Flux-Inpainting".  
   
 ## Usage  
-  
-Example workflows are placed in `ComfyUI-Flux-Inpainting/workflow`.<br/>  
+- Example workflows are placed in `ComfyUI-Flux-Inpainting/workflow`.
+- `FluxSimpleInpainting` node workflow: [Workflow Address](./workflow/FluxSimpleInpainting.json)  
+- `FluxTransformerInpainting` node workflow: [Workflow Address](./workflow/FluxTransformerInpainting.json)  
+
+
+### Nodes
+- FluxInpainting
+- FluxSimpleInpainting
+- FluxTransformerInpainting
+- FluxVAELoader
+
+#### `FluxTransformerInpainting` special Instruction
+The `FluxTransformerInpainting` node only need to load the transformer submodel from the `FLUX.1-Fil-dev-nf4` model and don't need load other submodels from `FLUX.1-Fil-dev`
+
+#### `FluxVAELoader` special Instruction
+The `FluxVAELoader` node  need to load the flux fill vae model from the `ComfyUI/models` directory, so you need to download the model and place it in the `ComfyUI/models` directory
+vae model download links: https://huggingface.co/black-forest-labs/FLUX.1-Fill-dev/tree/main/vae<br/>  
   
 ### Models
 The node needs to load the transformer and text_decoder_2 submodels from the `FLUX.1-Fil-dev-nf4` model and load other submodels from `FLUX.1-Fil-dev`, so these two models need to be placed in the models folder
@@ -53,3 +71,13 @@ ___
 Usage of outpainting workflow<br/>  
 [Workflow Address](./workflow/outpainting.json)  
 ![plot](./assets/outpainting.png)  
+
+___  
+Usage of `FluxSimpleInpainting` workflow<br/>  
+[Workflow Address](./workflow/FluxSimpleInpainting.json)  
+![plot](./assets/FluxSimpleInpainting.png)  
+
+___  
+Usage of `FluxTransformerInpainting` workflow<br/>  
+[Workflow Address](./workflow/FluxTransformerInpainting.json)  
+![plot](./assets/FluxTransformerInpainting.png)  

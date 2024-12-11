@@ -1,0 +1,307 @@
+{
+  "last_node_id": 31,
+  "last_link_id": 62,
+  "nodes": [
+    {
+      "id": 30,
+      "type": "FluxTransformerInpainting",
+      "pos": {
+        "0": 1332,
+        "1": -977
+      },
+      "size": {
+        "0": 340.20001220703125,
+        "1": 166
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 58,
+          "label": "conditioning"
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 59,
+          "label": "image"
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 60,
+          "label": "mask"
+        },
+        {
+          "name": "vae",
+          "type": "AUTOENCODER",
+          "link": 61,
+          "label": "vae"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            62
+          ],
+          "slot_index": 0,
+          "label": "image"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxTransformerInpainting"
+      },
+      "widgets_values": [
+        50,
+        false,
+        30
+      ]
+    },
+    {
+      "id": 21,
+      "type": "CLIPTextEncode",
+      "pos": {
+        "0": 826,
+        "1": -1221
+      },
+      "size": {
+        "0": 400,
+        "1": 200
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 23,
+          "label": "clip"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            58
+          ],
+          "slot_index": 0,
+          "label": "CONDITIONING"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "a black cat"
+      ]
+    },
+    {
+      "id": 20,
+      "type": "DualCLIPLoader",
+      "pos": {
+        "0": 386,
+        "1": -1222
+      },
+      "size": {
+        "0": 315,
+        "1": 106
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            23
+          ],
+          "slot_index": 0,
+          "label": "CLIP"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DualCLIPLoader"
+      },
+      "widgets_values": [
+        "clip_l.safetensors",
+        "t5xxl_fp16.safetensors",
+        "flux"
+      ]
+    },
+    {
+      "id": 13,
+      "type": "PreviewImage",
+      "pos": {
+        "0": 1744,
+        "1": -677
+      },
+      "size": {
+        "0": 660.6964111328125,
+        "1": 434.039794921875
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 62,
+          "label": "images"
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 11,
+      "type": "LoadImage",
+      "pos": {
+        "0": 498,
+        "1": -662
+      },
+      "size": {
+        "0": 640.788330078125,
+        "1": 436.8089294433594
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            59
+          ],
+          "slot_index": 0,
+          "label": "IMAGE"
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            60
+          ],
+          "slot_index": 1,
+          "label": "MASK"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "yosemite_inpaint_example.png",
+        "image"
+      ]
+    },
+    {
+      "id": 31,
+      "type": "FluxVAELoader",
+      "pos": {
+        "0": 900,
+        "1": -920
+      },
+      "size": {
+        "0": 315,
+        "1": 58
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "vae",
+          "type": "AUTOENCODER",
+          "links": [
+            61
+          ],
+          "slot_index": 0,
+          "label": "vae"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxVAELoader"
+      },
+      "widgets_values": [
+        "flux-fill-vae.safetensors"
+      ]
+    }
+  ],
+  "links": [
+    [
+      23,
+      20,
+      0,
+      21,
+      0,
+      "CLIP"
+    ],
+    [
+      58,
+      21,
+      0,
+      30,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      59,
+      11,
+      0,
+      30,
+      1,
+      "IMAGE"
+    ],
+    [
+      60,
+      11,
+      1,
+      30,
+      2,
+      "MASK"
+    ],
+    [
+      61,
+      31,
+      0,
+      30,
+      3,
+      "AUTOENCODER"
+    ],
+    [
+      62,
+      30,
+      0,
+      13,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6588450000000011,
+      "offset": [
+        -237.06606979472772,
+        950.9885694733783
+      ]
+    }
+  },
+  "version": 0.4
+}
