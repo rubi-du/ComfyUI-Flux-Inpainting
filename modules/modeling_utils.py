@@ -435,109 +435,7 @@ class ModelMixin(torch.nn.Module, PushToHubMixin):
         return hf_quantizer.dequantize(self)
 
     @classmethod
-    @validate_hf_hub_args
     def from_pretrained(cls, pretrained_model_name_or_path: Optional[Union[str, os.PathLike]], **kwargs):
-        r"""
-        Instantiate a pretrained PyTorch model from a pretrained model configuration.
-
-        The model is set in evaluation mode - `model.eval()` - by default, and dropout modules are deactivated. To
-        train the model, set it back in training mode with `model.train()`.
-
-        Parameters:
-            pretrained_model_name_or_path (`str` or `os.PathLike`, *optional*):
-                Can be either:
-
-                    - A string, the *model id* (for example `google/ddpm-celebahq-256`) of a pretrained model hosted on
-                      the Hub.
-                    - A path to a *directory* (for example `./my_model_directory`) containing the model weights saved
-                      with [`~ModelMixin.save_pretrained`].
-
-            cache_dir (`Union[str, os.PathLike]`, *optional*):
-                Path to a directory where a downloaded pretrained model configuration is cached if the standard cache
-                is not used.
-            torch_dtype (`str` or `torch.dtype`, *optional*):
-                Override the default `torch.dtype` and load the model with another dtype. If `"auto"` is passed, the
-                dtype is automatically derived from the model's weights.
-            force_download (`bool`, *optional*, defaults to `False`):
-                Whether or not to force the (re-)download of the model weights and configuration files, overriding the
-                cached versions if they exist.
-            proxies (`Dict[str, str]`, *optional*):
-                A dictionary of proxy servers to use by protocol or endpoint, for example, `{'http': 'foo.bar:3128',
-                'http://hostname': 'foo.bar:4012'}`. The proxies are used on each request.
-            output_loading_info (`bool`, *optional*, defaults to `False`):
-                Whether or not to also return a dictionary containing missing keys, unexpected keys and error messages.
-            local_files_only(`bool`, *optional*, defaults to `False`):
-                Whether to only load local model weights and configuration files or not. If set to `True`, the model
-                won't be downloaded from the Hub.
-            token (`str` or *bool*, *optional*):
-                The token to use as HTTP bearer authorization for remote files. If `True`, the token generated from
-                `diffusers-cli login` (stored in `~/.huggingface`) is used.
-            revision (`str`, *optional*, defaults to `"main"`):
-                The specific model version to use. It can be a branch name, a tag name, a commit id, or any identifier
-                allowed by Git.
-            from_flax (`bool`, *optional*, defaults to `False`):
-                Load the model weights from a Flax checkpoint save file.
-            subfolder (`str`, *optional*, defaults to `""`):
-                The subfolder location of a model file within a larger model repository on the Hub or locally.
-            mirror (`str`, *optional*):
-                Mirror source to resolve accessibility issues if you're downloading a model in China. We do not
-                guarantee the timeliness or safety of the source, and you should refer to the mirror site for more
-                information.
-            device_map (`str` or `Dict[str, Union[int, str, torch.device]]`, *optional*):
-                A map that specifies where each submodule should go. It doesn't need to be defined for each
-                parameter/buffer name; once a given module name is inside, every submodule of it will be sent to the
-                same device. Defaults to `None`, meaning that the model will be loaded on CPU.
-
-                Set `device_map="auto"` to have 🤗 Accelerate automatically compute the most optimized `device_map`. For
-                more information about each option see [designing a device
-                map](https://hf.co/docs/accelerate/main/en/usage_guides/big_modeling#designing-a-device-map).
-            max_memory (`Dict`, *optional*):
-                A dictionary device identifier for the maximum memory. Will default to the maximum memory available for
-                each GPU and the available CPU RAM if unset.
-            offload_folder (`str` or `os.PathLike`, *optional*):
-                The path to offload weights if `device_map` contains the value `"disk"`.
-            offload_state_dict (`bool`, *optional*):
-                If `True`, temporarily offloads the CPU state dict to the hard drive to avoid running out of CPU RAM if
-                the weight of the CPU state dict + the biggest shard of the checkpoint does not fit. Defaults to `True`
-                when there is some disk offload.
-            low_cpu_mem_usage (`bool`, *optional*, defaults to `True` if torch version >= 1.9.0 else `False`):
-                Speed up model loading only loading the pretrained weights and not initializing the weights. This also
-                tries to not use more than 1x model size in CPU memory (including peak memory) while loading the model.
-                Only supported for PyTorch >= 1.9.0. If you are using an older version of PyTorch, setting this
-                argument to `True` will raise an error.
-            variant (`str`, *optional*):
-                Load weights from a specified `variant` filename such as `"fp16"` or `"ema"`. This is ignored when
-                loading `from_flax`.
-            use_safetensors (`bool`, *optional*, defaults to `None`):
-                If set to `None`, the `safetensors` weights are downloaded if they're available **and** if the
-                `safetensors` library is installed. If set to `True`, the model is forcibly loaded from `safetensors`
-                weights. If set to `False`, `safetensors` weights are not loaded.
-
-        <Tip>
-
-        To use private or [gated models](https://huggingface.co/docs/hub/models-gated#gated-models), log-in with
-        `huggingface-cli login`. You can also activate the special
-        ["offline-mode"](https://huggingface.co/diffusers/installation.html#offline-mode) to use this method in a
-        firewalled environment.
-
-        </Tip>
-
-        Example:
-
-        ```py
-        from diffusers import UNet2DConditionModel
-
-        unet = UNet2DConditionModel.from_pretrained("runwayml/stable-diffusion-v1-5", subfolder="unet")
-        ```
-
-        If you get the error message below, you need to finetune the weights for your downstream task:
-
-        ```bash
-        Some weights of UNet2DConditionModel were not initialized from the model checkpoint at runwayml/stable-diffusion-v1-5 and are newly initialized because the shapes did not match:
-        - conv_in.weight: found shape torch.Size([320, 4, 3, 3]) in the checkpoint and torch.Size([320, 9, 3, 3]) in the model instantiated
-        You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
-        ```
-        """
         cache_dir = kwargs.pop("cache_dir", None)
         ignore_mismatched_sizes = kwargs.pop("ignore_mismatched_sizes", False)
         force_download = kwargs.pop("force_download", False)
@@ -557,6 +455,7 @@ class ModelMixin(torch.nn.Module, PushToHubMixin):
         variant = kwargs.pop("variant", None)
         use_safetensors = kwargs.pop("use_safetensors", None)
         quantization_config = kwargs.pop("quantization_config", None)
+        local_config_path = kwargs.pop("local_config_path", None)
 
         allow_pickle = False
         if use_safetensors is None:
@@ -628,7 +527,7 @@ class ModelMixin(torch.nn.Module, PushToHubMixin):
                 raise ValueError("`low_cpu_mem_usage` and `device_map` require PyTorch >= 1.10.")
 
         # Load config if we don't provide a configuration
-        config_path = pretrained_model_name_or_path
+        config_path = pretrained_model_name_or_path if local_config_path is None else local_config_path
 
         user_agent = {
             "diffusers": __version__,
@@ -709,29 +608,31 @@ class ModelMixin(torch.nn.Module, PushToHubMixin):
         # Determine if we're loading from a directory of sharded checkpoints.
         is_sharded = False
         index_file = None
-        is_local = os.path.isdir(pretrained_model_name_or_path)
-        index_file_kwargs = {
-            "is_local": is_local,
-            "pretrained_model_name_or_path": pretrained_model_name_or_path,
-            "subfolder": subfolder or "",
-            "use_safetensors": use_safetensors,
-            "cache_dir": cache_dir,
-            "variant": variant,
-            "force_download": force_download,
-            "proxies": proxies,
-            "local_files_only": local_files_only,
-            "token": token,
-            "revision": revision,
-            "user_agent": user_agent,
-            "commit_hash": commit_hash,
-        }
-        index_file = _fetch_index_file(**index_file_kwargs)
-        # In case the index file was not found we still have to consider the legacy format.
-        # this becomes applicable when the variant is not None.
-        if variant is not None and (index_file is None or not os.path.exists(index_file)):
-            index_file = _fetch_index_file_legacy(**index_file_kwargs)
-        if index_file is not None and index_file.is_file():
-            is_sharded = True
+        is_local_file = os.path.isfile(pretrained_model_name_or_path)
+        if not is_local_file:
+            is_local = os.path.isdir(pretrained_model_name_or_path)
+            index_file_kwargs = {
+                "is_local": is_local,
+                "pretrained_model_name_or_path": pretrained_model_name_or_path,
+                "subfolder": subfolder or "",
+                "use_safetensors": use_safetensors,
+                "cache_dir": cache_dir,
+                "variant": variant,
+                "force_download": force_download,
+                "proxies": proxies,
+                "local_files_only": local_files_only,
+                "token": token,
+                "revision": revision,
+                "user_agent": user_agent,
+                "commit_hash": commit_hash,
+            }
+            index_file = _fetch_index_file(**index_file_kwargs)
+            # In case the index file was not found we still have to consider the legacy format.
+            # this becomes applicable when the variant is not None.
+            if variant is not None and (index_file is None or not os.path.exists(index_file)):
+                index_file = _fetch_index_file_legacy(**index_file_kwargs)
+            if index_file is not None and index_file.is_file():
+                is_sharded = True
 
         if is_sharded and from_flax:
             raise ValueError("Loading of sharded checkpoints is not supported when `from_flax=True`.")

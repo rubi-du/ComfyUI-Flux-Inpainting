@@ -2,3 +2,4 @@ numpy
 diffusers>=0.31.0
 transformers>=4.45.0
 bitsandbytes>=0.44.0
+accelerate>=1.1.1
