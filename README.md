@@ -26,8 +26,10 @@ Install via ComfyUI-Manager by searching for "ComfyUI-Flux-Inpainting".
   
 ## Usage  
 - Example workflows are placed in `ComfyUI-Flux-Inpainting/workflow`.
+- `FluxInpainting` node workflow: [Workflow Address](./workflow/inpainting.json)  
 - `FluxSimpleInpainting` node workflow: [Workflow Address](./workflow/FluxSimpleInpainting.json)  
 - `FluxTransformerInpainting` node workflow: [Workflow Address](./workflow/FluxTransformerInpainting.json)  
+- `FluxGuffInpainting` node workflow: [Workflow Address](./workflow/FluxGuffInpainting.json)  
 
 
 ### Nodes
