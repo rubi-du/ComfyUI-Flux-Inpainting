@@ -5,6 +5,7 @@
 This repository wraps the flux fill model as ComfyUI nodes. Use NF4 flux fill model, support for inpainting and outpainting image. Compared to the flux fill dev model, these nodes can use the flux fill model to perform inpainting and outpainting work under lower VRM conditions<br>  
 
 ## News
+- Dec 26, 2024: Add `FluxGuffInpainting` node to support loading gguf models<br>
 - Dec 11, 2024: Add `FluxSimpleInpainting`, `FluxTransformerInpainting`, `FluxVAELoader` nodes can be used to split pipelines and comfyui clip and vae loader can be used instead<br>
 
 ## Installation   
@@ -34,6 +35,11 @@ Install via ComfyUI-Manager by searching for "ComfyUI-Flux-Inpainting".
 - FluxSimpleInpainting
 - FluxTransformerInpainting
 - FluxVAELoader
+- FluxGuffInpainting
+
+#### `FluxGuffInpainting` special Instruction
+The `FluxGuffInpainting` node only need to load the guff model and put them into the `ComfyUI/models/unet` folder and don't need load other submodels from `FLUX.1-Fil-dev`
+vae model download links: https://hf-mirror.com/YarvixPA/FLUX.1-Fill-dev-gguf/tree/main
 
 #### `FluxTransformerInpainting` special instruction
 The `FluxTransformerInpainting` node only need to load the transformer submodel from the `FLUX.1-Fil-dev-nf4` model and don't need load other submodels from `FLUX.1-Fil-dev`
@@ -48,7 +54,7 @@ The node needs to load the transformer and text_decoder_2 submodels from the `FL
 Model download links:<br/>  
 FLUX.1-Fil-dev: https://huggingface.co/black-forest-labs/FLUX.1-Fill-dev<br/>  
 FLUX.1-Fil-dev-nf4: https://huggingface.co/sayakpaul/FLUX.1-Fill-dev-nf4<br/> 
-
+FLUX.1-Fill-dev-gguf: https://hf-mirror.com/YarvixPA/FLUX.1-Fill-dev-gguf/tree/main<br/> 
 The directory structure is as follows:<br/>  
 ```
 ComfyUI/models/
@@ -81,3 +87,8 @@ ___
 Usage of `FluxTransformerInpainting` workflow<br/>  
 [Workflow Address](./workflow/FluxTransformerInpainting.json)  
 ![plot](./assets/FluxTransformerInpainting.png)  
+
+___  
+Usage of `FluxGuffInpainting` workflow<br/>  
+[Workflow Address](./workflow/FluxGuffInpainting.json)  
+![plot](./assets/FluxGuffInpainting.png)  
